@@ -1,0 +1,266 @@
+:root {
+  --primary: #4ecdc4;       /* 薄荷绿 */
+  --secondary: #ff6b6b;     /* 珊瑚粉 */
+  --accent: #ffe66d;        /* 暖黄 */
+  --bg: #f7fff7;            /* 极淡绿背景 */
+  --text-main: #2f3e46;
+  --text-sub: #8395a7;
+  --card-bg: #ffffff;
+  --shadow: 0 10px 25px rgba(78, 205, 196, 0.15);
+  --radius: 24px;
+  --radius-sm: 12px;
+  --radius-lg: 32px;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  margin: 0;
+  font-family: 'Nunito', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background-color: var(--bg);
+  color: var(--text-main);
+  overflow-x: hidden;
+}
+
+.wrap {
+  max-width: 500px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 16px 16px 100px;
+}
+
+/* Header Design */
+.hd {
+  background: white;
+  padding: 24px 20px 16px;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.hd-t {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.hd-t span {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--primary);
+}
+
+.hd-t small {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-top: 4px;
+}
+
+/* Progress Bar */
+.progress-container {
+  width: 100%;
+  height: 8px;
+  background: #eef2f3;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary), #a8e6cf);
+  transition: width 0.4s ease;
+}
+
+/* Tabs: 学期切换 (7A, 7B...) */
+.tabs {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 4px 0;
+  scrollbar-width: none;
+  margin-bottom: 16px;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tabs button {
+  flex: 0 0 auto;
+  border: 2px solid #f0f4f5;
+  background: #fbfcfc;
+  color: var(--text-sub);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tabs button.on {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(78, 205, 196, 0.3);
+}
+
+/* Mode Switch: 背单词/语法 */
+.mode-switch {
+  display: inline-flex;
+  background: #f0f4f5;
+  padding: 4px;
+  border-radius: 50px;
+}
+
+.mode-pill {
+  border: none;
+  background: none;
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-sub);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.mode-pill.on {
+  background: white;
+  color: var(--primary);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+/* Main Content */
+.main-content {
+  margin-top: 8px;
+}
+
+/* Unit Selector - Grid Style */
+.selector-area {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.sel-btn {
+  aspect-ratio: 1/1;
+  border: none;
+  background: white;
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.04);
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sel-btn.on {
+  background: var(--accent);
+  color: #5e4d00;
+  transform: scale(1.05);
+}
+
+/* Word Card - The Heart of the App */
+.content-pane {
+  min-height: 320px;
+}
+
+.card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 40px 24px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  animation: popin 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.word-card .w {
+  font-size: 48px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 4px;
+  display: block;
+}
+
+.word-card .p {
+  font-size: 20px;
+  color: var(--primary);
+  margin-bottom: 24px;
+  display: block;
+  font-style: italic;
+}
+
+.word-card .m {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 30px;
+  display: block;
+}
+
+.word-card .example {
+  background: #f9fbfb;
+  padding: 16px;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  color: var(--text-sub);
+  line-height: 1.5;
+  text-align: left;
+  border-left: 4px solid var(--primary);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--text-sub);
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+/* Footer */
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  padding: 16px;
+  text-align: center;
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  box-shadow: 0 -10px 25px rgba(0,0,0,0.05);
+  z-index: 100;
+}
+
+.footer-info {
+  font-size: 13px;
+  color: var(--text-sub);
+  margin-bottom: 4px;
+}
+
+.footer-hint {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Animations */
+@keyframes popin {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}

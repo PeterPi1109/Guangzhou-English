@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#6cc5a3">
+  <title>开心学英语 · 沪教版</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="app" class="wrap">
+    <!-- Header: 更加可爱的标题和进度感 -->
+    <header class="hd">
+      <div class="hd-t">
+        <span>🌟 开心学英语</span>
+        <small>沪教版 · 广州初中专用</small>
+      </div>
+      
+      <!-- 进度条组件 -->
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
+      </div>
+      
+      <nav id="grade-tabs" class="tabs"></nav>
+      
+      <div class="mode-switch">
+        <button id="btn-word" class="mode-pill on">📖 背单词</button>
+        <button id="btn-grammar" class="mode-pill">📝 语法点</button>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <!-- 单元选择区 -->
+      <section id="unit-selector" class="selector-area"></section>
+      
+      <!-- 核心内容展示区 (卡片/列表/题目) -->
+      <div id="main-pane" class="content-pane">
+        <div class="empty-state">
+          <div class="empty-icon">👋</div>
+          <p>选个学期和单元，开启学习之旅吧！</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- 状态栏: 底部固定导航/提示 -->
+    <footer id="status-bar" class="footer">
+      <div class="footer-info">今日进度: <span id="day-progress">0%</span></div>
+      <div class="footer-hint">点击单元开始学习 ✨</div>
+    </footer>
+  </div>
+
+  <!-- 引入数据和逻辑 -->
+  <script src="data/words.js"></script>
+  <script src="data/grammar.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then(reg => console.log('SW registered:', reg))
+          .catch(err => console.log('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+</html>
