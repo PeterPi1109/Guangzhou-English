@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8"/>
@@ -10,17 +10,182 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css"/>
+  
+
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const h = document.createElement('div');
+      h.id = 'heartbeat';
+      h.innerText = '✅ System Online';
+      h.style = 'position:fixed;top:0;left:0;background:#4ecdc4;color:white;font-size:10px;padding:2px 5px;z-index:10000;';
+      document.body.prepend(h);
+    });
+  </script>
+
+<script>
+(function() {
+    const createDebugUI = () => {
+        const debugDiv = document.createElement('div');
+        debugDiv.id = 'debug-dashboard';
+        debugDiv.style = 'position:fixed; top:40px; left:10px; background:rgba(0,0,0,0.85); color:#00ff00; font-family:monospace; font-size:12px; padding:10px; z-index:9999; border:2px solid #ff4444; border-radius:8px; max-width:300px; pointer-events:none;';
+        debugDiv.innerHTML = '<strong>🔍 运行时诊断 (Runtime Debug)</strong><hr style="border-color:#444">';
+        document.body.appendChild(debugDiv);
+        return debugDiv;
+    };
+
+    const logToDebug = (msg, isError = false) => {
+        const div = document.getElementById('debug-dashboard');
+        if (!div) return;
+        const line = document.createElement('div');
+        line.style.color = isError ? '#ff4444' : '#00ff00';
+        line.innerText = `> ${msg}`;
+        div.appendChild(line);
+    };
+
+    window.addEventListener('load', () => {
+        const div = createDebugUI();
+        logToDebug('System: Window Loaded');
+
+        // Test 1: Check if app_standalone.js is loaded
+        // We check for a unique function or variable from app.js
+        // Assuming app.js has a 'render' or 'init' or similar, but let's just check global vars.
+        
+        try {
+            logToDebug('Checking Global Variables...');
+            
+            const checkVar = (name) => {
+                if (typeof window[name] !== 'undefined') {
+                    const count = window[name].length || Object.keys(window[name]).length || 'N/A';
+                    logToDebug(`${name}: ✅ OK (${count} items)`);
+                    return true;
+                } else {
+                    logToDebug(`${name}: ❌ NOT FOUND`, true);
+                    return false;
+                }
+            };
+
+            const wOk = checkVar('WORDS');
+            const pOk = checkVar('PATTERNS');
+            const gOk = checkVar('GRAMMAR');
+
+            if (wOk && pOk && gOk) {
+                logToDebug('Status: Data loaded successfully.');
+            } else {
+                logToDebug('Status: Data missing!', true);
+            }
+
+        } catch (e) {
+            logToDebug('CRASH: ' + e.message, true);
+        }
+    });
+
+    // Catch unhandled errors and log them to the UI
+    window.onerror = function(message, source, lineno, colno, error) {
+        const div = document.getElementById('debug-dashboard');
+        if (div) {
+            const line = document.createElement('div');
+            line.style.color = '#ff4444';
+            line.style.fontWeight = 'bold';
+            line.innerText = `🚨 FATAL: ${message} (Line ${lineno})`;
+            div.appendChild(line);
+        }
+        return false;
+    };
+})();
+</script>
+
 </head>
 <body>
+
+<div id="debug-hud" style="
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    width: 320px;
+    max-height: 400px;
+    background: rgba(0, 0, 0, 0.9);
+    color: #00ff00;
+    font-family: monospace;
+    font-size: 12px;
+    padding: 12px;
+    z-index: 10000;
+    border: 2px solid #ff4444;
+    border-radius: 8px;
+    overflow-y: auto;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    pointer-events: auto;
+">
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid #444; padding-bottom: 4px;">
+        <strong style="color: #ff4444;">🔍 RUNTIME DIAGNOSIS</strong>
+        <button onclick="this.parentElement.parentElement.remove()" style="background:none; border:none; color:white; cursor:pointer;">[X]</button>
+    </div>
+    <div id="debug-log" style="white-space: pre-wrap; line-height: 1.4;"></div>
+</div>
+
+<script>
+(function() {
+    const logEl = document.getElementById('debug-log');
+    const log = (msg, type = 'info') => {
+        const div = document.createElement('div');
+        const colors = { info: '#00ff00', error: '#ff4444', warn: '#ffff00', success: '#44ff44' };
+        div.style.color = colors[type] || '#ffffff';
+        div.innerText = `[${new Date().toLocaleTimeString()}] ${msg}`;
+        logEl.appendChild(div);
+        document.getElementById('debug-hud').scrollTop = document.getElementById('debug-hud').scrollHeight;
+    };
+
+    // Capture all errors
+    window.onerror = function(message, source, lineno, colno, error) {
+        log(`🚨 FATAL ERROR: ${message} (Line ${lineno})`, 'error');
+        // Also log the stack trace if available
+        if (error && error.stack) {
+            const stack = document.createElement('div');
+            stack.style.fontSize = '10px';
+            stack.style.color = '#aaa';
+            stack.innerText = error.stack.split('\n')[1] || '';
+            logEl.appendChild(stack);
+        }
+        return false;
+    };
+
+    // Check globals on load
+    window.addEventListener('load', () => {
+        log('System: Window Load Detected');
+        
+        const checkVar = (name) => {
+            try {
+                if (typeof window[name] !== 'undefined') {
+                    const count = window[name].length || Object.keys(window[name]).length || 'N/A';
+                    log(`✅ ${name}: FOUND (${count} items)`, 'success');
+                    return true;
+                } else {
+                    log(`❌ ${name}: NOT FOUND`, 'error');
+                    return false;
+                }
+            } catch (e) {
+                log(`❌ ${name}: ERROR ACCESSING (${e.message})`, 'error');
+                return false;
+            }
+        };
+
+        checkVar('WORDS');
+        checkVar('PATTERNS');
+        checkVar('GRAMMAR');
+    });
+
+    // Attach log to window so app.js can use it
+    window.debugLog = log;
+})();
+</script>
+
   <div id="app" class="wrap">
-    <!-- Header: 更加可爱的标题和进度感 -->
     <header class="hd">
       <div class="hd-t">
         <span>🌟 开心学英语</span>
         <small>沪教版 · 广州初中专用</small>
       </div>
       
-      <!-- 进度条组件 -->
       <div class="progress-container">
         <div id="progress-bar" class="progress-bar" style="width: 0%"></div>
       </div>
@@ -30,15 +195,12 @@
       <div class="mode-switch">
         <button id="btn-word" class="mode-pill on">📖 背单词</button>
         <button id="btn-grammar" class="mode-pill">📝 语法点</button>
+        <button id="btn-pattern" class="mode-pill">💡 规律</button>
       </div>
     </header>
 
-    <!-- Main content -->
     <main class="main-content">
-      <!-- 单元选择区 -->
       <section id="unit-selector" class="selector-area"></section>
-      
-      <!-- 核心内容展示区 (卡片/列表/题目) -->
       <div id="main-pane" class="content-pane">
         <div class="empty-state">
           <div class="empty-icon">👋</div>
@@ -47,25 +209,26 @@
       </div>
     </main>
 
-    <!-- 状态栏: 底部固定导航/提示 -->
     <footer id="status-bar" class="footer">
       <div class="footer-info">今日进度: <span id="day-progress">0%</span></div>
       <div class="footer-hint">点击单元开始学习 ✨</div>
     </footer>
   </div>
 
-  <!-- 引入数据和逻辑 -->
-  <script src="data/words.js"></script>
-  <script src="data/grammar.js"></script>
-  <script src="app.js"></script>
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then(reg => console.log('SW registered:', reg))
-          .catch(err => console.log('SW registration failed:', err));
-      });
-    }
-  </script>
+  <!-- Load order: Data must come BEFORE logic -->
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  <script src="app_standalone.js?v=20260924"></script>
 </body>
 </html>
